@@ -20,16 +20,3 @@ Input {
   background-color: white !important;
   color: #f6398d !important;
 }
-
-.reg_link {
-  text-decoration: none !important;
-  color: #000;
-  font-weight: 600;
-}
-
-.reg_link:hover {
-  color: #f6398d !important;
-  border: 1px solid #f6398d;
-  padding: 10px;
-  border-radius: 5px;
-}

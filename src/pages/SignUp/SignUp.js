@@ -1,6 +1,6 @@
+import axios from "axios";
+import "./SignUp.css";
 import React, { useState } from "react";
-import "./Login.css";
-import { Link } from "react-router-dom";
 import {
   Card,
   Col,
@@ -13,9 +13,10 @@ import {
   Button,
 } from "reactstrap";
 
-const Login = () => {
+const SignUp = () => {
   const [user, setUser] = useState({
     username: "",
+    email: "",
     password: "",
   });
 
@@ -23,14 +24,26 @@ const Login = () => {
     setUser({ ...user, [event.target.name]: event.target.value });
   };
 
-  const submitHandler = (event) => {
-    event.preventDefault();
-  };
-
   const clearData = () => {
     setUser({
       username: "",
+      email: "",
       password: "",
+    });
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const userInfo = {
+      username: user.username,
+      email: user.email,
+      password: user.password,
+    };
+
+    axios.post("http://localhost:4000/users", userInfo).then((res) => {
+      console.log("Data Inserted");
+      clearData();
     });
   };
 
@@ -40,8 +53,8 @@ const Login = () => {
         <Col sm="12" md={{ size: 6, offset: 3 }}>
           <Card>
             <CardBody>
-              <form className="pt-3 pb-3" onSubmit={submitHandler}>
-                <h1 className="form_header">Login</h1>
+              <form className="pb-3" onSubmit={submitHandler}>
+                <h1 className="form_header">Registration</h1>
                 <Row>
                   <Col sm={12}>
                     <FormGroup>
@@ -53,6 +66,21 @@ const Login = () => {
                         onChange={changeHandler}
                         placeholder="Enter Username"
                         id="username"
+                        required
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col sm={12}>
+                    <FormGroup>
+                      <Label for="email">Email</Label>
+                      <Input
+                        type="email"
+                        name="email"
+                        value={user.email}
+                        onChange={changeHandler}
+                        placeholder="Enter Email"
+                        id="email"
+                        required
                       />
                     </FormGroup>
                   </Col>
@@ -66,6 +94,7 @@ const Login = () => {
                         onChange={changeHandler}
                         placeholder="Enter Password"
                         id="password"
+                        required
                       />
                     </FormGroup>
                   </Col>
@@ -83,11 +112,6 @@ const Login = () => {
                       </Row>
                     </FormGroup>
                   </Col>
-                  <Col sm={12} className="pt-4">
-                    <Link to="/signup" className="reg_link">
-                      Don't have an account
-                    </Link>
-                  </Col>
                 </Row>
               </form>
             </CardBody>
@@ -98,4 +122,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
