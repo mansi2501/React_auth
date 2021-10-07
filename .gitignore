@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+/.old_signup.js
 
 # testing
 /coverage

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import { FaHome } from "react-icons/fa";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -11,16 +12,25 @@ const Navbar = () => {
       <nav>
         <ul>
           <li>
+            <NavLink to="/">
+              <FaHome />
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/allusers">All Users</NavLink>
+          </li>
+          <li>
             <NavLink to="/signin">Login</NavLink>
           </li>
           <li>
             <NavLink to="/signup">Sign Up</NavLink>
           </li>
-          <li>Logout</li>
         </ul>
       </nav>
     </header>
   );
 };
+
+// <li>Logout</li>
 
 export default Navbar;

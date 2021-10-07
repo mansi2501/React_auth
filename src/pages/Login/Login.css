@@ -7,6 +7,11 @@ Input {
   color: #f6398d !important;
 }
 
+.user_card {
+  border-color: #f6398d !important;
+  padding: 30px 0px;
+}
+
 .btn_submit,
 .btn_cancel:hover {
   color: white !important;

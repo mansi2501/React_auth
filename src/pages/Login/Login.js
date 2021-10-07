@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { userLogin } from "../../redux/action/action";
 import {
   Card,
   Col,
@@ -12,12 +12,24 @@ import {
   Input,
   Button,
 } from "reactstrap";
+import "./Login.css";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [user, setUser] = useState({
-    username: "",
+    email: "",
     password: "",
   });
+
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const clearData = () => {
+    setUser({
+      email: "",
+      password: "",
+    });
+  };
 
   const changeHandler = (event) => {
     setUser({ ...user, [event.target.name]: event.target.value });
@@ -25,38 +37,46 @@ const Login = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-  };
 
-  const clearData = () => {
-    setUser({
-      username: "",
-      password: "",
-    });
+    if (!user.email || !user.password) {
+      return;
+    }
+    // else if (
+    //   user.email === "mansi@test.com" &&
+    //   user.password === "mansi123"
+    // ) {
+    //   history.push("/admin");
+    // }
+    else {
+      dispatch(userLogin(user.email, user.password));
+      history.push("/");
+    }
   };
 
   return (
     <Container className="pt-5">
       <Row>
         <Col sm="12" md={{ size: 6, offset: 3 }}>
-          <Card>
+          <Card className="user_card">
             <CardBody>
               <form className="pt-3 pb-3" onSubmit={submitHandler}>
                 <h1 className="form_header">Login</h1>
                 <Row>
-                  <Col sm={12}>
+                  <Col sm={12} className="pb-3">
                     <FormGroup>
-                      <Label for="username">User Name</Label>
+                      <Label for="email">Email</Label>
                       <Input
-                        type="text"
-                        name="username"
-                        value={user.username}
+                        type="email"
+                        name="email"
+                        value={user.email}
                         onChange={changeHandler}
-                        placeholder="Enter Username"
-                        id="username"
+                        placeholder="Enter Email"
+                        id="email"
+                        required
                       />
                     </FormGroup>
                   </Col>
-                  <Col sm={12}>
+                  <Col sm={12} className="pb-3">
                     <FormGroup>
                       <Label for="password">Password</Label>
                       <Input
@@ -66,6 +86,7 @@ const Login = () => {
                         onChange={changeHandler}
                         placeholder="Enter Password"
                         id="password"
+                        required
                       />
                     </FormGroup>
                   </Col>

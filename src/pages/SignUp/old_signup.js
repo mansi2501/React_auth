@@ -1,7 +1,6 @@
+import axios from "axios";
 import "./SignUp.css";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { AddUser } from "../../redux/action/action";
 import {
   Card,
   Col,
@@ -13,7 +12,6 @@ import {
   Input,
   Button,
 } from "reactstrap";
-import { useHistory, Link } from "react-router-dom";
 
 const SignUp = () => {
   const [user, setUser] = useState({
@@ -22,8 +20,9 @@ const SignUp = () => {
     password: "",
   });
 
-  const history = useHistory();
-  const dispatch = useDispatch();
+  const changeHandler = (event) => {
+    setUser({ ...user, [event.target.name]: event.target.value });
+  };
 
   const clearData = () => {
     setUser({
@@ -33,30 +32,31 @@ const SignUp = () => {
     });
   };
 
-  const changeHandler = (event) => {
-    setUser({ ...user, [event.target.name]: event.target.value });
-  };
-
   const submitHandler = (event) => {
     event.preventDefault();
-    dispatch(AddUser(user.username, user.email, user.password));
-    history.push("/allusers");
+
+    const userInfo = {
+      username: user.username,
+      email: user.email,
+      password: user.password,
+    };
+
+    axios.post("http://localhost:4000/users", userInfo).then((res) => {
+      console.log("Data Inserted");
+      clearData();
+    });
   };
 
   return (
     <Container className="pt-5">
       <Row>
         <Col sm="12" md={{ size: 6, offset: 3 }}>
-          <Card className="user_card">
+          <Card>
             <CardBody>
-              <form
-                className="pb-3"
-                autoComplete="off"
-                onSubmit={submitHandler}
-              >
+              <form className="pb-3" onSubmit={submitHandler}>
                 <h1 className="form_header">Registration</h1>
                 <Row>
-                  <Col sm={12} className="pb-3">
+                  <Col sm={12}>
                     <FormGroup>
                       <Label for="username">User Name</Label>
                       <Input
@@ -70,7 +70,7 @@ const SignUp = () => {
                       />
                     </FormGroup>
                   </Col>
-                  <Col sm={12} className="pb-3">
+                  <Col sm={12}>
                     <FormGroup>
                       <Label for="email">Email</Label>
                       <Input
@@ -84,7 +84,7 @@ const SignUp = () => {
                       />
                     </FormGroup>
                   </Col>
-                  <Col sm={12} className="pb-3">
+                  <Col sm={12}>
                     <FormGroup>
                       <Label for="password">Password</Label>
                       <Input
@@ -108,11 +108,6 @@ const SignUp = () => {
                           <Button onClick={clearData} className="btn_cancel">
                             Cancel
                           </Button>
-                        </Col>
-                        <Col sm={12} className="pt-4">
-                          <Link to="/signin" className="reg_link">
-                            Sign In
-                          </Link>
                         </Col>
                       </Row>
                     </FormGroup>

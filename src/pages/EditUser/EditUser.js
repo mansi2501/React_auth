@@ -1,7 +1,7 @@
-import "./SignUp.css";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { AddUser } from "../../redux/action/action";
+import React, { useEffect, useState } from "react";
+import "./EditUser.css";
+import { useDispatch, useSelector } from "react-redux";
+import { EditUserData } from "../../redux/action/action";
 import {
   Card,
   Col,
@@ -13,15 +13,18 @@ import {
   Input,
   Button,
 } from "reactstrap";
-import { useHistory, Link } from "react-router-dom";
+import { getSingleUser, loadUsers } from "../../redux/action/action";
+import { useParams, useHistory } from "react-router";
 
-const SignUp = () => {
+const EditUser = () => {
   const [user, setUser] = useState({
     username: "",
     email: "",
     password: "",
   });
 
+  const { id } = useParams();
+  const { currentUser } = useSelector((state) => state.user);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -33,13 +36,24 @@ const SignUp = () => {
     });
   };
 
+  useEffect(() => {
+    dispatch(getSingleUser(id));
+  }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      setUser({ ...currentUser });
+    }
+  }, [currentUser]);
+
   const changeHandler = (event) => {
     setUser({ ...user, [event.target.name]: event.target.value });
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
-    dispatch(AddUser(user.username, user.email, user.password));
+    dispatch(EditUserData(id, user));
+    dispatch(loadUsers());
     history.push("/allusers");
   };
 
@@ -49,12 +63,8 @@ const SignUp = () => {
         <Col sm="12" md={{ size: 6, offset: 3 }}>
           <Card className="user_card">
             <CardBody>
-              <form
-                className="pb-3"
-                autoComplete="off"
-                onSubmit={submitHandler}
-              >
-                <h1 className="form_header">Registration</h1>
+              <form className="pb-3" onSubmit={submitHandler}>
+                <h1 className="form_header">Edit User Information</h1>
                 <Row>
                   <Col sm={12} className="pb-3">
                     <FormGroup>
@@ -62,7 +72,7 @@ const SignUp = () => {
                       <Input
                         type="text"
                         name="username"
-                        value={user.username}
+                        value={user.username || ""}
                         onChange={changeHandler}
                         placeholder="Enter Username"
                         id="username"
@@ -76,7 +86,7 @@ const SignUp = () => {
                       <Input
                         type="email"
                         name="email"
-                        value={user.email}
+                        value={user.email || ""}
                         onChange={changeHandler}
                         placeholder="Enter Email"
                         id="email"
@@ -90,7 +100,7 @@ const SignUp = () => {
                       <Input
                         type="password"
                         name="password"
-                        value={user.password}
+                        value={user.password || ""}
                         onChange={changeHandler}
                         placeholder="Enter Password"
                         id="password"
@@ -102,17 +112,12 @@ const SignUp = () => {
                     <FormGroup>
                       <Row>
                         <Col sm={6}>
-                          <Button className="btn_submit">Submit</Button>
+                          <Button className="btn_submit">Update</Button>
                         </Col>
                         <Col sm={6}>
                           <Button onClick={clearData} className="btn_cancel">
                             Cancel
                           </Button>
-                        </Col>
-                        <Col sm={12} className="pt-4">
-                          <Link to="/signin" className="reg_link">
-                            Sign In
-                          </Link>
                         </Col>
                       </Row>
                     </FormGroup>
@@ -127,4 +132,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default EditUser;
